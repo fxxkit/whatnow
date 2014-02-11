@@ -23,7 +23,7 @@ class y_newsParser():
 				htmlContent = urllib2.urlopen(self.url).read()
 				result = self.__parser(htmlContent)
 				self.url = None #initialize the url parameter
-				return json.dumps(result)
+				return json.dumps(result,ensure_ascii=False)
 			elif type(self.url) is list:
 				resultList = []
 				for url in self.url:
@@ -31,7 +31,7 @@ class y_newsParser():
 					result = self.__parser(htmlContent)
 					resultList.append(result)	
 				self.url = None #initialize the url parameter
-				return json.dumps(resultList)		
+				return json.dumps(resultList,ensure_ascii=False)	
 		else:
 			print 'Please use "setURL" method to set url first'
 			return None
@@ -46,7 +46,7 @@ class y_newsParser():
 		#Extract date
 		#DS prototype = {u'content': u'2014-02-09T16:00:00Z', u'itemprop': u'datePublished'}
 		date = soup.find(attrs={'itemprop':'datePublished'}).attrs['content']
-		date = date.split('T')[0]
+		date = date.split('T')[0].encode('utf-8')
 
 		#Extract title
 		title = soup.find(attrs={'itemprop':'headline'}).attrs['content'].encode('utf-8')
@@ -62,7 +62,7 @@ class y_newsParser():
 				break
 
 		#Extract the category
-		category = soup.find(class_="navitem selected").find('a')['href'].replace('/','')
+		category = soup.find(class_="navitem selected").find('a')['href'].replace('/','').encode('utf-8')
 
 		print 'date: ', date
 		print 'title: ',title
